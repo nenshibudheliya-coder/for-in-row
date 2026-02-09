@@ -405,7 +405,7 @@ const FourInARow = () => {
       width: '100%'
     }}>
       <div style={{
-        width: '100vw',
+        width: '100%',
         minHeight: '100vh',
         height: 'auto',
         // aspectRatio: gameState === 'playing' ? '1200 / 600' : 'unset',
@@ -414,7 +414,8 @@ const FourInARow = () => {
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
-        padding: 'clamp(10px, 3vw, 30px)'
+        padding: 'clamp(5px, 2vw, 20px)',
+        boxSizing: 'border-box'
       }}>
         <div className="bg-spots">
           {[...Array(30)].map((_, i) => {
@@ -448,11 +449,10 @@ const FourInARow = () => {
         )}
 
 
-        {/* 05-02 --selct your skin (two player mode) reponsive*/}
         {gameState === 'two-player-setup' && (
           <div style={{
-            zIndex: 10, display: 'flex', gap: 'clamp(6px, 1.5vw, 12px)', flexWrap: 'wrap', justifyContent: 'center', width: '98%', maxWidth: '850px',
-            padding: 'clamp(5px, 1.5vw, 10px) 0'
+            zIndex: 10, display: 'flex', gap: 'clamp(6px, 1.5vw, 12px)', flexWrap: 'wrap', justifyContent: 'center', width: '95%', maxWidth: '850px',
+            padding: 'clamp(5px, 1.5vw, 10px) 0', boxSizing: 'border-box'
           }}>
             {/* Player 1 Selection */}
             <div style={{
@@ -563,18 +563,18 @@ const FourInARow = () => {
         )}
 
 
-        {/* 04-02 --select your skin(play vs computer) reponsive */}
         {gameState === 'skin-select' && ( // 04-02 --coloradd//
           <div style={{
             zIndex: 10, textAlign: 'center', background: '#f5f5dc', padding: 'clamp(1rem, 3vw, 2rem)', borderRadius: '25px', border: '5px solid #000',
-            maxWidth: '500px', width: '95%', position: 'relative', margin: '10px'
+            maxWidth: '500px', width: '90%', position: 'relative', margin: '10px', boxSizing: 'border-box'
           }}>
             <h2 style={{ fontFamily: 'Luckiest Guy', fontSize: 'clamp(1.5rem, 6vw, 2.5rem)', margin: '0 0 1rem 0', color: '#1b5e20' }}>Select Your Skin</h2>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(35px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(clamp(35px, 10vw, 45px), 1fr))',
               gap: 'clamp(8px, 2vw, 15px)',
-              justifyItems: 'center'
+              justifyItems: 'center',
+              width: '100%'
             }}>
               {SKINS.map((color) => (
                 <div
