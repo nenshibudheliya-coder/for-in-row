@@ -34,6 +34,14 @@ const FourInARow = () => {
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
+
+    // Attempt to lock orientation to portrait
+    try {
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('portrait').catch(() => { });
+      }
+    } catch (e) { }
+
     return () => window.removeEventListener('resize', handleResize);
   }, []); //
 
@@ -391,7 +399,7 @@ const FourInARow = () => {
 
 
   return (
-    <div style={{
+    <div className="main-app-container" style={{
       minHeight: '100vh',
       background: '#d8f3dc', //05-02 --background-green//
       display: 'flex',
@@ -404,7 +412,7 @@ const FourInARow = () => {
       position: 'relative',
       width: '100%'
     }}>
-      <div style={{
+      <div className="game-wrapper" style={{
         width: '100%',
         minHeight: '100vh',
         height: 'auto',
@@ -426,6 +434,7 @@ const FourInARow = () => {
             );
           })}
         </div>
+
 
         {gameState === 'menu' && (
           <div style={{ textAlign: 'center', zIndex: 10, width: '100%', padding: '20px' }}>
@@ -698,9 +707,9 @@ const FourInARow = () => {
               )}
             </div>
 
-            <div className="game-status" style={{ marginTop: '0.6rem', color: '#f7ededff', opacity: 0.9, fontWeight: 700, fontSize: 'clamp(0.8rem, 3vw, 1.1rem)' }}>
+            {/* <div className="game-status" style={{ marginTop: '0.6rem', color: '#f7ededff', opacity: 0.9, fontWeight: 700, fontSize: 'clamp(0.8rem, 3vw, 1.1rem)' }}>
               {gameMode === 'ai' && currentPlayer === PLAYER2 ? '🤖 Bot AI thinking...' : `🎮 ${currentPlayer === PLAYER1 ? playerNames.player1 : playerNames.player2}'s turn`}
-            </div>
+            </div> */}
           </div>
         )}
       </div>

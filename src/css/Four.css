@@ -179,3 +179,14 @@
             font-size: 1.2rem;
           }
         }
+
+        /* Prevent landscape play on mobile 09-02 --roated */
+        @media (max-width: 932px) and (orientation: landscape) {
+          .main-app-container {
+            display: none !important;
+          }
+          body {
+            overflow: hidden;
+            background: #fff !important; /* Hide background plane */
+          }
+        }
