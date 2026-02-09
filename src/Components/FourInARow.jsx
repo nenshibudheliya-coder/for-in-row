@@ -464,7 +464,7 @@ const FourInARow = () => {
                 <input
                   value={playerNames.player1}
                   onChange={(e) => setPlayerNames(prev => ({ ...prev, player1: e.target.value }))}
-                  style={{ background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '10px', padding: '5px 10px', fontFamily: 'Luckiest Guy', width: 'clamp(100px, 35vw, 150px)', color: '#fff', fontSize: '1rem' }}
+                  style={{ background: 'rgba(16, 36, 19, 0.05)', border: '1px solid rgba(0, 0, 0, 0.1)', borderRadius: '10px', padding: '5px 10px', fontFamily: 'Luckiest Guy', width: 'clamp(100px, 35vw, 150px)', color: playerColors.player1, fontSize: '1.2rem' }}
                 />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(40px, 1fr))', gap: '8px' }}>
@@ -510,7 +510,7 @@ const FourInARow = () => {
                   type="text"
                   value={playerNames.player2}
                   onChange={(e) => setPlayerNames(prev => ({ ...prev, player2: e.target.value }))}
-                  style={{ background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '10px', padding: '5px 10px', fontFamily: 'Luckiest Guy', width: 'clamp(100px, 35vw, 150px)', color: '#fff', fontSize: '1rem' }}
+                  style={{ background: 'rgba(0, 0, 0, 0.05)', border: '1px solid rgba(0, 0, 0, 0.1)', borderRadius: '10px', padding: '5px 10px', fontFamily: 'Luckiest Guy', width: 'clamp(100px, 35vw, 150px)', color: playerColors.player2, fontSize: '1.2rem' }}
                 />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(40px, 1fr))', gap: '8px' }}>
@@ -627,7 +627,7 @@ const FourInARow = () => {
                 padding: 'clamp(0.5rem, 1.5vw, 1rem)', background: 'rgba(45, 106, 79, 0.15)', border: 'none', borderRadius: '50%', color: '#000', cursor: 'pointer', transition: 'all 0.2s',
                 display: 'flex', alignItems: 'center', justifyContent: 'center'
               }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(45, 106, 79, 0.25)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(45, 106, 79, 0.15)'}>
-                <Home size={28} color="#f9f7f7ff" style={{ width: 'clamp(20px, 4.5vw, 32px)', height: 'clamp(20px, 4.5vw, 32px)' }} />
+                <Home size={28} color="#fffcfcff" style={{ width: 'clamp(20px, 4.5vw, 32px)', height: 'clamp(20px, 4.5vw, 32px)' }} />
               </button>
 
               <div style={{ display: 'flex', gap: 'clamp(5px, 2vw, 20px)', flexWrap: 'wrap', justifyContent: 'center', flex: 1, minWidth: 0 }}>
