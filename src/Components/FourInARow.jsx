@@ -50,13 +50,14 @@ const FourInARow = () => {
 
 
   // Constants for board drawing
-  const boardWidth = 740; // Optimized for 1200px width
-  const boardHeight = 490;
+  const isMobile = windowWidth < 768;
+  const boardWidth = isMobile ? Math.min(windowWidth * 0.95, 1100) : 740; // Larger on mobile
+  const boardHeight = isMobile ? (boardWidth * 490 / 740) : 490; // Maintain aspect ratio
   const marginX = (WIDTH - boardWidth) / 2;
-  const marginY = 110;
+  const marginY = isMobile ? 80 : 110; // Move up on mobile to save space
   const cellWidth = boardWidth / COLS;
   const cellHeight = boardHeight / ROWS;
-  const padding = 10;
+  const padding = isMobile ? 6 : 10;
   const radius = Math.min(cellWidth, cellHeight) / 2 - padding;
 
   const checkWinner = (board, row, col, player) => {
