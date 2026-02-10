@@ -8,6 +8,7 @@ import FourInARow from './Components/FourInARow.jsx'
 import './css/Four.css'
 import './App.css'
 
+
 function App() {
 
   return (
@@ -18,5 +19,6 @@ function App() {
     </>
   )
 }
+
 
 export default App
