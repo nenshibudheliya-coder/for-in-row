@@ -190,3 +190,16 @@
             background: #fff !important; /* Hide background plane */
           }
         }
+
+        /* Clear browser-default tap highlights and focus outlines 10-02 */
+        canvas, .game-wrapper, .main-app-container, .menu-btn, button {
+          -webkit-tap-highlight-color: transparent;
+          outline: none;
+          -webkit-user-select: none;
+          user-select: none;
+          -webkit-touch-callout: none;
+        }
+
+        canvas:focus {
+          outline: none;
+        }
