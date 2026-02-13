@@ -34,6 +34,14 @@ const FourInARow = () => {
     useEffect(() => {
         const handleResize = () => setWindowWidth(window.innerWidth);
         window.addEventListener('resize', handleResize);
+
+        // Attempt to lock orientation to portrait
+        try {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('portrait').catch(() => { });
+            }
+        } catch (e) { }
+
         return () => window.removeEventListener('resize', handleResize);
     }, []); //
 
@@ -79,6 +87,10 @@ const FourInARow = () => {
         }
         return null;
     };
+
+
+
+
 
     const getValidMoves = (tempBoard) => {
         const moves = [];
@@ -391,320 +403,337 @@ const FourInARow = () => {
 
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            background: '#d8f3dc', //05-02 --background-green//
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: '"Outfit", sans-serif',
-            padding: '0',
-            overflow: 'visible',
-            position: 'relative',
-            width: '100%'
-        }}>
-            <div style={{
-                width: '100vw',
-                minHeight: '100vh',
-                height: 'auto',
-                // aspectRatio: gameState === 'playing' ? '1200 / 600' : 'unset',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-                padding: 'clamp(10px, 3vw, 30px)'
-            }}>
-                <div className="bg-spots">
-                    {[...Array(30)].map((_, i) => {
-                        const size = i % 3 === 0 ? 'bubble-lg' : i % 3 === 1 ? 'bubble-md' : 'bubble-sm';
-                        const color = i % 4 === 0 ? 'green-b' : 'white-b';
-                        return (
-                            <div key={i} className={`bg-piece ${size} ${color} p-${i + 1}`} />
-                        );
-                    })}
-                </div>
-
-                {gameState === 'menu' && (
-                    <div style={{ textAlign: 'center', zIndex: 10, width: '100%', padding: '20px' }}>
-                        <div className="menu-title">
-                            <span className="word-4">4</span>
-                            <span className="word-in">IN</span>
-                            <span className="word-a">A</span>
-                            <br />
-                            <span className="word-row">ROW</span>
-                        </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-                            <button className="menu-btn btn-local" onClick={() => startPlaying('local')}>
-                                <Users size={30} /> TWO PLAYER
-                            </button>
-                            <button className="menu-btn btn-computer" onClick={() => startPlaying('ai')}>
-                                <Monitor size={30} /> PLAY VS COMPUTER
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-
-                {/* 05-02 --selct your skin (two player mode) reponsive*/}
-                {gameState === 'two-player-setup' && (
-                    <div style={{
-                        zIndex: 10, display: 'flex', gap: 'clamp(6px, 1.5vw, 12px)', flexWrap: 'wrap', justifyContent: 'center', width: '98%', maxWidth: '850px',
-                        padding: 'clamp(5px, 1.5vw, 10px) 0'
-                    }}>
-                        {/* Player 1 Selection */}
-                        <div style={{
-                            background: '#fefae0', padding: 'clamp(0.8rem, 2vw, 1.2rem)', borderRadius: '20px', border: '4px solid #000', flex: '1', minWidth: 'min(280px, 100%)',
-                            maxWidth: '450px'
-                        }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '10px' }}>
-                                <h3 style={{ fontFamily: 'Luckiest Guy', fontSize: 'clamp(1.4rem, 5vw, 1.8rem)', color: '#1b4332', margin: 0 }}>Player 1</h3>
-                                <input
-                                    value={playerNames.player1}
-                                    onChange={(e) => setPlayerNames(prev => ({ ...prev, player1: e.target.value }))}
-                                    style={{ background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '10px', padding: '5px 10px', fontFamily: 'Luckiest Guy', width: 'clamp(100px, 35vw, 150px)', color: '#fff', fontSize: '1rem' }}
-                                />
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(40px, 1fr))', gap: '8px' }}>
-                                {SKINS.map((color) => { // 07-02 --color//
-                                    const isSelectedByOther = playerColors.player2 === color;
-                                    const isSelectedBySelf = playerColors.player1 === color;
-                                    return (
-                                        <div
-                                            key={color}
-                                            onClick={() => !isSelectedByOther && setPlayerColors(prev => ({ ...prev, player1: color }))} // 07-02 --color//
-                                            style={{
-                                                width: windowWidth < 400 ? '30px' : '40px', height: windowWidth < 400 ? '30px' : '40px', borderRadius: '50%', background: color,
-                                                cursor: isSelectedByOther ? 'not-allowed' : 'pointer',
-                                                border: isSelectedBySelf ? '4px solid #000' : '2px solid rgba(0, 0, 0, 0.3)',
-                                                boxShadow: isSelectedBySelf ? '0 0 10px rgba(0, 0, 0, 0.3)' : 'none',
-                                                transform: isSelectedBySelf ? 'scale(1.1)' : 'scale(1)',
-                                                opacity: isSelectedByOther ? 0.3 : 1,
-                                                position: 'relative'
-                                            }}
-                                            onMouseEnter={e => !isSelectedByOther && (e.currentTarget.style.transform = 'scale(1.1)')} // 07-02 --colortwo//
-                                            onMouseLeave={e => e.currentTarget.style.transform = isSelectedBySelf ? 'scale(1.1)' : 'scale(1)'} // 07-02 --colortwo//
-                                        >
-                                            {isSelectedByOther && (
-                                                <div style={{
-                                                    position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                    color: '#111010ff', fontSize: '10px', fontWeight: 'bold'
-                                                }}>X</div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-
-                        {/* Player 2 Selection */}
-                        <div style={{
-                            background: '#fefae0', padding: 'clamp(0.8rem, 2vw, 1.2rem)', borderRadius: '20px', border: '4px solid #000', flex: '1', minWidth: 'min(280px, 100%)',
-                            maxWidth: '450px'
-                        }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '10px' }}>
-                                <h3 style={{ fontFamily: 'Luckiest Guy', fontSize: 'clamp(1.4rem, 5vw, 1.8rem)', color: '#1b4332', margin: 0 }}>Player 2</h3>
-                                <input
-                                    type="text"
-                                    value={playerNames.player2}
-                                    onChange={(e) => setPlayerNames(prev => ({ ...prev, player2: e.target.value }))}
-                                    style={{ background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '10px', padding: '5px 10px', fontFamily: 'Luckiest Guy', width: 'clamp(100px, 35vw, 150px)', color: '#fff', fontSize: '1rem' }}
-                                />
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(40px, 1fr))', gap: '8px' }}>
-                                {SKINS.map((color) => { // 07-02 --color//
-                                    const isSelectedByOther = playerColors.player1 === color;
-                                    const isSelectedBySelf = playerColors.player2 === color;
-                                    return (
-                                        <div
-                                            key={color}
-                                            onClick={() => !isSelectedByOther && setPlayerColors(prev => ({ ...prev, player2: color }))} // 07-02 --color//
-                                            style={{
-                                                width: windowWidth < 400 ? '30px' : '40px', height: windowWidth < 400 ? '30px' : '40px', borderRadius: '50%', background: color,
-                                                cursor: isSelectedByOther ? 'not-allowed' : 'pointer',
-                                                border: isSelectedBySelf ? '4px solid #000' : '2px solid rgba(0, 0, 0, 0.3)',
-                                                boxShadow: isSelectedBySelf ? '0 0 10px rgba(0, 0, 0, 0.3)' : 'none',
-                                                transform: isSelectedBySelf ? 'scale(1.1)' : 'scale(1)',
-                                                opacity: isSelectedByOther ? 0.3 : 1,
-                                                position: 'relative'
-                                            }}
-                                            onMouseEnter={e => !isSelectedByOther && (e.currentTarget.style.transform = 'scale(1.1)')} // 07-02 --colortwo//
-                                            onMouseLeave={e => e.currentTarget.style.transform = isSelectedBySelf ? 'scale(1.1)' : 'scale(1)'} // 07-02 --colortwo//
-                                        >
-                                            {isSelectedByOther && (
-                                                <div style={{
-                                                    position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                    color: '#000', fontSize: '10px', fontWeight: 'bold'
-                                                }}>X</div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-
-                        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: 'clamp(10px, 3vw, 20px)', marginTop: '1rem', flexWrap: 'wrap' }}>
-                            <button onClick={backToMenu} style={{ //05-02 --cancelbutton//
-                                background: 'linear-gradient(135deg, #e53935 0%, #b71c1c 100%)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '15px', padding: 'clamp(8px, 1.5vw, 12px) clamp(15px, 4vw, 30px)',
-                                fontFamily: 'Luckiest Guy', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)', fontSize: 'clamp(1.1rem, 3.5vw, 1.5rem)', transition: 'transform 0.2s'
-                            }}>BACK</button>
-                            <button onClick={() => setGameState('playing')} style={{
-                                background: 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '15px', padding: 'clamp(8px, 1.5vw, 12px) clamp(15px, 4vw, 30px)',
-                                fontFamily: 'Luckiest Guy', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)', fontSize: 'clamp(1.1rem, 3.5vw, 1.5rem)', transition: 'transform 0.2s'
-                            }}>START</button>
-                            <button onClick={cancelSetup} style={{
-                                background: 'linear-gradient(135deg, #e53935 0%, #b71c1c 100%)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '15px', padding: 'clamp(8px, 1.5vw, 12px) clamp(15px, 4vw, 30px)',
-                                fontFamily: 'Luckiest Guy', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)', fontSize: 'clamp(1.1rem, 3.5vw, 1.5rem)', transition: 'transform 0.2s'
-                            }}>CANCEL</button>
-                        </div>
-                    </div>
-                )}
-
-
-                {/* 04-02 --select your skin(play vs computer) reponsive */}
-                {gameState === 'skin-select' && ( // 04-02 --coloradd//
-                    <div style={{
-                        zIndex: 10, textAlign: 'center', background: '#f5f5dc', padding: 'clamp(1rem, 3vw, 2rem)', borderRadius: '25px', border: '5px solid #000',
-                        maxWidth: '500px', width: '95%', position: 'relative', margin: '10px'
-                    }}>
-                        <h2 style={{ fontFamily: 'Luckiest Guy', fontSize: 'clamp(1.5rem, 6vw, 2.5rem)', margin: '0 0 1rem 0', color: '#1b5e20' }}>Select Your Skin</h2>
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(35px, 1fr))',
-                            gap: 'clamp(8px, 2vw, 15px)',
-                            justifyItems: 'center'
-                        }}>
-                            {SKINS.map((color) => (
-                                <div
-                                    key={color}
-                                    onClick={() => selectColor(color)}
-                                    style={{
-                                        width: 'clamp(35px, 8vw, 45px)', height: 'clamp(35px, 8vw, 45px)', borderRadius: '50%', background: color, cursor: 'pointer',
-                                        border: playerColors.player1 === color ? '4px solid #000' : '2px solid rgba(0, 0, 0, 0.3)',
-                                        boxShadow: playerColors.player1 === color ? '0 0 10px rgba(0, 0, 0, 0.3)' : 'none',
-                                        transform: playerColors.player1 === color ? 'scale(1.1)' : 'scale(1)' // 07-02 --colortwo//
-                                    }}
-                                    onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
-                                    onMouseLeave={e => e.currentTarget.style.transform = playerColors.player1 === color ? 'scale(1.1)' : 'scale(1)'} // 07-02 --colortwo//
-                                />
-                            ))}
-                        </div>
-                        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: 'clamp(8px, 3vw, 20px)', marginTop: '1.5rem', flexWrap: 'wrap' }}>
-                            <button onClick={backToMenu} style={{
-                                background: 'linear-gradient(135deg, #e53935 0%, #b71c1c 100%)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '15px', padding: 'clamp(8px, 1.5vw, 12px) clamp(15px, 4vw, 30px)',
-                                fontFamily: 'Luckiest Guy', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)', fontSize: 'clamp(1.1rem, 3.5vw, 1.3rem)', transition: 'transform 0.2s'
-                            }}>BACK</button>
-                            <button onClick={() => setGameState('playing')} style={{
-                                background: 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '15px', padding: 'clamp(8px, 1.5vw, 12px) clamp(15px, 4vw, 30px)',
-                                fontFamily: 'Luckiest Guy', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)', fontSize: 'clamp(1.1rem, 3.5vw, 1.3rem)', transition: 'transform 0.2s'
-                            }}>START</button>
-                            <button onClick={cancelSetup} style={{
-                                background: 'linear-gradient(135deg, #e53935 0%, #b71c1c 100%)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '15px', padding: 'clamp(8px, 1.5vw, 12px) clamp(15px, 4vw, 30px)',
-                                fontFamily: 'Luckiest Guy', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)', fontSize: 'clamp(1.1rem, 3.5vw, 1.3rem)', transition: 'transform 0.2s'
-                            }}>CANCEL</button>
-                        </div>
-                    </div>
-                )}
-
-
-                {/*game working */}
-                {gameState === 'playing' && (
-                    <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '1000px', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '10px' }}>
-                        {/* Header */}
-                        <div style={{
-                            width: '100%',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            marginBottom: 'clamp(10px, 3vw, 25px)',
-                            flexWrap: 'nowrap',
-                            gap: 'clamp(5px, 2vw, 20px)',
-                            padding: '0 clamp(10px, 4vw, 40px)'
-                        }}>
-                            <button onClick={exitToMenu} style={{
-                                padding: 'clamp(0.5rem, 1.5vw, 1rem)', background: 'rgba(45, 106, 79, 0.15)', border: 'none', borderRadius: '50%', color: '#000', cursor: 'pointer', transition: 'all 0.2s',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center'
-                            }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(45, 106, 79, 0.25)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(45, 106, 79, 0.15)'}>
-                                <Home size={28} color="#f9f7f7ff" style={{ width: 'clamp(20px, 4.5vw, 32px)', height: 'clamp(20px, 4.5vw, 32px)' }} />
-                            </button>
-
-                            <div style={{ display: 'flex', gap: 'clamp(5px, 2vw, 20px)', flexWrap: 'wrap', justifyContent: 'center', flex: 1, minWidth: 0 }}>
-                                <PlayerScore icon={<User size={18} />} name={playerNames.player1} score={scores.player1} color={playerColors.player1} active={currentPlayer === PLAYER1 && !winner} />
-                                <PlayerScore
-                                    icon={gameMode === 'ai' ? <Bot size={18} /> : <Users size={18} />}
-                                    name={gameMode === 'ai' ? "BOT" : playerNames.player2}
-                                    score={scores.player2}
-                                    color={playerColors.player2}
-                                    active={currentPlayer === PLAYER2 && !winner}
-                                    thinking={isAiThinking}
-                                />
-                            </div>
-
-                            <button onClick={resetGame} style={{
-                                padding: 'clamp(0.5rem, 1.5vw, 1rem)', background: 'rgba(45, 106, 79, 0.15)', border: 'none', borderRadius: '50%', color: '#000', cursor: 'pointer',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center'
-                            }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(45, 106, 79, 0.25)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(45, 106, 79, 0.15)'}>
-                                <RotateCcw size={28} color="#f7f0f0ff" style={{ width: 'clamp(20px, 4.5vw, 32px)', height: 'clamp(20px, 4.5vw, 32px)' }} />
-                            </button>
-                        </div>
-
-                        {/* Game Canvas Container */}
-                        <div style={{
-                            width: '100%',
-                            maxWidth: '100%',
-                            height: 'auto',
-                            maxHeight: '70vh',
-                            aspectRatio: `${WIDTH} / ${HEIGHT}`,
-                            background: 'transparent',
-                            borderRadius: '20px',
-                            padding: '4px',
-                            border: 'none',
-                            position: 'relative',
-                            overflow: 'hidden',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}>
-                            <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} style={{
-                                width: '100%',
-                                height: 'auto',
-                                maxWidth: '100%',
-                                maxHeight: '100%',
-                                objectFit: 'contain',
-                                cursor: (winner || (gameMode === 'ai' && currentPlayer === PLAYER2)) ? 'default' : 'pointer',
-                                display: 'block',
-                                borderRadius: '16px'
-                            }} onClick={handleCanvasClick} onMouseMove={handleMouseMove} onMouseLeave={() => setHoveredCol(null)} />
-
-                            {winner && (
-                                <div style={{
-                                    position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                                    background: 'rgba(0, 0, 0, 0.85)', backdropFilter: 'blur(8px)', borderRadius: '20px', padding: '20px', textAlign: 'center'
-                                }}>
-                                    <div style={{
-                                        color: winner === 'draw' ? '#fff' : playerColors[winner],
-                                        fontSize: 'clamp(1.5rem, 8vw, 3rem)', fontWeight: 800, textAlign: 'center', textShadow: `0 0 20px currentColor`, display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', gap: '0.8rem'
-                                    }}>
-                                        {winner === 'draw' ? 'DRAW!' : <><Trophy size={40} /> {winner === PLAYER1 ? playerNames.player1 : (gameMode === 'ai' ? 'BOT' : playerNames.player2)} WINS!</>}
-                                    </div>
-                                    <button onClick={resetGame} style={{
-                                        marginTop: '1rem', padding: '0.8rem 2rem', fontSize: 'clamp(1rem, 4vw, 1.2rem)', fontWeight: 700,
-                                        background: 'linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '50px',
-                                        cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s', boxShadow: '0 10px 20px rgba(0,0,0,0.3)'
-                                    }}> <RotateCcw size={18} /> RESET GAME </button>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="game-status" style={{ marginTop: '0.6rem', color: '#f7ededff', opacity: 0.9, fontWeight: 700, fontSize: 'clamp(0.8rem, 3vw, 1.1rem)' }}>
-                            {gameMode === 'ai' && currentPlayer === PLAYER2 ? '🤖 Bot AI thinking...' : `🎮 ${currentPlayer === PLAYER1 ? playerNames.player1 : playerNames.player2}'s turn`}
-                        </div>
-                    </div>
-                )}
+        <>
+            {/* Rotate Message Overlay for Landscape Mode on Mobile */}
+            {/* Rotate Message Overlay for Landscape Mode on Mobile */}
+            <div className="rotate-message" data-enabled="true">
+                <svg className="rotate-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+                    <polyline points="17 2 12 7 7 2"></polyline>
+                </svg>
+                <h2>Please Rotate Your Device</h2>
+                <p>This game works best in portrait mode</p>
             </div>
-        </div>
+
+            <div
+                className="main-app-container"
+                data-rotate-restricted="true"
+                style={{
+                    minHeight: '100vh',
+                    background: '#d8f3dc', //05-02 --background-green//
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontFamily: '"Outfit", sans-serif',
+                    padding: '0',
+                    overflow: 'visible',
+                    position: 'relative',
+                    width: '100%'
+                }}>
+                <div className="game-wrapper" style={{
+                    width: '100%',
+                    minHeight: '100vh',
+                    height: 'auto',
+                    // aspectRatio: gameState === 'playing' ? '1200 / 600' : 'unset',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'relative',
+                    padding: 'clamp(5px, 2vw, 20px)',
+                    boxSizing: 'border-box'
+                }}>
+                    <div className="bg-spots">
+                        {[...Array(30)].map((_, i) => {
+                            const size = i % 3 === 0 ? 'bubble-lg' : i % 3 === 1 ? 'bubble-md' : 'bubble-sm';
+                            const color = i % 4 === 0 ? 'green-b' : 'white-b';
+                            return (
+                                <div key={i} className={`bg-piece ${size} ${color} p-${i + 1}`} />
+                            );
+                        })}
+                    </div>
+
+
+                    {gameState === 'menu' && (
+                        <div style={{ textAlign: 'center', zIndex: 10, width: '100%', padding: '20px' }}>
+                            <div className="menu-title">
+                                <span className="word-4">4</span>
+                                <span className="word-in">IN</span>
+                                <span className="word-a">A</span>
+                                <br />
+                                <span className="word-row">ROW</span>
+                            </div>
+
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                                <button className="menu-btn btn-local" onClick={() => startPlaying('local')}>
+                                    <Users size={30} /> TWO PLAYER
+                                </button>
+                                <button className="menu-btn btn-computer" onClick={() => startPlaying('ai')}>
+                                    <Monitor size={30} /> PLAY VS COMPUTER
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+
+                    {gameState === 'two-player-setup' && (
+                        <div style={{
+                            zIndex: 10, display: 'flex', gap: 'clamp(6px, 1.5vw, 12px)', flexWrap: 'wrap', justifyContent: 'center', width: '95%', maxWidth: '850px',
+                            padding: 'clamp(5px, 1.5vw, 10px) 0', boxSizing: 'border-box'
+                        }}>
+                            {/* Player 1 Selection */}
+                            <div style={{
+                                background: '#fefae0', padding: 'clamp(0.8rem, 2vw, 1.2rem)', borderRadius: '20px', border: '4px solid #000', flex: '1', minWidth: 'min(280px, 100%)',
+                                maxWidth: '450px'
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '10px' }}>
+                                    <h3 style={{ fontFamily: 'Luckiest Guy', fontSize: 'clamp(1.4rem, 5vw, 1.8rem)', color: '#1b4332', margin: 0 }}>Player 1</h3>
+                                    <input
+                                        value={playerNames.player1}
+                                        onChange={(e) => setPlayerNames(prev => ({ ...prev, player1: e.target.value }))}
+                                        style={{ background: 'rgba(16, 36, 19, 0.05)', border: '1px solid rgba(0, 0, 0, 0.1)', borderRadius: '10px', padding: '5px 10px', fontFamily: 'Luckiest Guy', width: 'clamp(100px, 35vw, 150px)', color: playerColors.player1, fontSize: '1.2rem' }}
+                                    />
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(40px, 1fr))', gap: '8px' }}>
+                                    {SKINS.map((color) => { // 07-02 --color//
+                                        const isSelectedByOther = playerColors.player2 === color;
+                                        const isSelectedBySelf = playerColors.player1 === color;
+                                        return (
+                                            <div
+                                                key={color}
+                                                onClick={() => !isSelectedByOther && setPlayerColors(prev => ({ ...prev, player1: color }))} // 07-02 --color//
+                                                style={{
+                                                    width: windowWidth < 400 ? '30px' : '40px', height: windowWidth < 400 ? '30px' : '40px', borderRadius: '50%', background: color,
+                                                    cursor: isSelectedByOther ? 'not-allowed' : 'pointer',
+                                                    border: isSelectedBySelf ? '4px solid #000' : '2px solid rgba(0, 0, 0, 0.3)',
+                                                    boxShadow: isSelectedBySelf ? '0 0 10px rgba(0, 0, 0, 0.3)' : 'none',
+                                                    transform: isSelectedBySelf ? 'scale(1.1)' : 'scale(1)',
+                                                    opacity: isSelectedByOther ? 0.3 : 1,
+                                                    position: 'relative'
+                                                }}
+                                                onMouseEnter={e => !isSelectedByOther && (e.currentTarget.style.transform = 'scale(1.1)')} // 07-02 --colortwo//
+                                                onMouseLeave={e => e.currentTarget.style.transform = isSelectedBySelf ? 'scale(1.1)' : 'scale(1)'} // 07-02 --colortwo//
+                                            >
+                                                {isSelectedByOther && (
+                                                    <div style={{
+                                                        position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                        color: '#111010ff', fontSize: '10px', fontWeight: 'bold'
+                                                    }}>X</div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Player 2 Selection */}
+                            <div style={{
+                                background: '#fefae0', padding: 'clamp(0.8rem, 2vw, 1.2rem)', borderRadius: '20px', border: '4px solid #000', flex: '1', minWidth: 'min(280px, 100%)',
+                                maxWidth: '450px'
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '10px' }}>
+                                    <h3 style={{ fontFamily: 'Luckiest Guy', fontSize: 'clamp(1.4rem, 5vw, 1.8rem)', color: '#1b4332', margin: 0 }}>Player 2</h3>
+                                    <input
+                                        type="text"
+                                        value={playerNames.player2}
+                                        onChange={(e) => setPlayerNames(prev => ({ ...prev, player2: e.target.value }))}
+                                        style={{ background: 'rgba(0, 0, 0, 0.05)', border: '1px solid rgba(0, 0, 0, 0.1)', borderRadius: '10px', padding: '5px 10px', fontFamily: 'Luckiest Guy', width: 'clamp(100px, 35vw, 150px)', color: playerColors.player2, fontSize: '1.2rem' }}
+                                    />
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(40px, 1fr))', gap: '8px' }}>
+                                    {SKINS.map((color) => { // 07-02 --color//
+                                        const isSelectedByOther = playerColors.player1 === color;
+                                        const isSelectedBySelf = playerColors.player2 === color;
+                                        return (
+                                            <div
+                                                key={color}
+                                                onClick={() => !isSelectedByOther && setPlayerColors(prev => ({ ...prev, player2: color }))} // 07-02 --color//
+                                                style={{
+                                                    width: windowWidth < 400 ? '30px' : '40px', height: windowWidth < 400 ? '30px' : '40px', borderRadius: '50%', background: color,
+                                                    cursor: isSelectedByOther ? 'not-allowed' : 'pointer',
+                                                    border: isSelectedBySelf ? '4px solid #000' : '2px solid rgba(0, 0, 0, 0.3)',
+                                                    boxShadow: isSelectedBySelf ? '0 0 10px rgba(0, 0, 0, 0.3)' : 'none',
+                                                    transform: isSelectedBySelf ? 'scale(1.1)' : 'scale(1)',
+                                                    opacity: isSelectedByOther ? 0.3 : 1,
+                                                    position: 'relative'
+                                                }}
+                                                onMouseEnter={e => !isSelectedByOther && (e.currentTarget.style.transform = 'scale(1.1)')} // 07-02 --colortwo//
+                                                onMouseLeave={e => e.currentTarget.style.transform = isSelectedBySelf ? 'scale(1.1)' : 'scale(1)'} // 07-02 --colortwo//
+                                            >
+                                                {isSelectedByOther && (
+                                                    <div style={{
+                                                        position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                        color: '#000', fontSize: '10px', fontWeight: 'bold'
+                                                    }}>X</div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: 'clamp(10px, 3vw, 20px)', marginTop: '1rem', flexWrap: 'wrap' }}>
+                                <button onClick={backToMenu} style={{ //05-02 --cancelbutton//
+                                    background: 'linear-gradient(135deg, #e53935 0%, #b71c1c 100%)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '15px', padding: 'clamp(8px, 1.5vw, 12px) clamp(15px, 4vw, 30px)',
+                                    fontFamily: 'Luckiest Guy', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)', fontSize: 'clamp(1.1rem, 3.5vw, 1.5rem)', transition: 'transform 0.2s'
+                                }}>BACK</button>
+                                <button onClick={() => setGameState('playing')} style={{
+                                    background: 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '15px', padding: 'clamp(8px, 1.5vw, 12px) clamp(15px, 4vw, 30px)',
+                                    fontFamily: 'Luckiest Guy', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)', fontSize: 'clamp(1.1rem, 3.5vw, 1.5rem)', transition: 'transform 0.2s'
+                                }}>START</button>
+                                <button onClick={cancelSetup} style={{
+                                    background: 'linear-gradient(135deg, #e53935 0%, #b71c1c 100%)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '15px', padding: 'clamp(8px, 1.5vw, 12px) clamp(15px, 4vw, 30px)',
+                                    fontFamily: 'Luckiest Guy', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)', fontSize: 'clamp(1.1rem, 3.5vw, 1.5rem)', transition: 'transform 0.2s'
+                                }}>CANCEL</button>
+                            </div>
+                        </div>
+                    )}
+
+
+                    {gameState === 'skin-select' && ( // 04-02 --coloradd//
+                        <div style={{
+                            zIndex: 10, textAlign: 'center', background: '#f5f5dc', padding: 'clamp(1rem, 3vw, 2rem)', borderRadius: '25px', border: '5px solid #000',
+                            maxWidth: '500px', width: '90%', position: 'relative', margin: '10px', boxSizing: 'border-box'
+                        }}>
+                            <h2 style={{ fontFamily: 'Luckiest Guy', fontSize: 'clamp(1.5rem, 6vw, 2.5rem)', margin: '0 0 1rem 0', color: '#1b5e20' }}>Select Your Skin</h2>
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fit, minmax(clamp(35px, 10vw, 45px), 1fr))',
+                                gap: 'clamp(8px, 2vw, 15px)',
+                                justifyItems: 'center',
+                                width: '100%'
+                            }}>
+                                {SKINS.map((color) => (
+                                    <div
+                                        key={color}
+                                        onClick={() => selectColor(color)}
+                                        style={{
+                                            width: 'clamp(35px, 8vw, 45px)', height: 'clamp(35px, 8vw, 45px)', borderRadius: '50%', background: color, cursor: 'pointer',
+                                            border: playerColors.player1 === color ? '4px solid #000' : '2px solid rgba(0, 0, 0, 0.3)',
+                                            boxShadow: playerColors.player1 === color ? '0 0 10px rgba(0, 0, 0, 0.3)' : 'none',
+                                            transform: playerColors.player1 === color ? 'scale(1.1)' : 'scale(1)' // 07-02 --colortwo//
+                                        }}
+                                        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                                        onMouseLeave={e => e.currentTarget.style.transform = playerColors.player1 === color ? 'scale(1.1)' : 'scale(1)'} // 07-02 --colortwo//
+                                    />
+                                ))}
+                            </div>
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: 'clamp(8px, 3vw, 20px)', marginTop: '1.5rem', flexWrap: 'wrap' }}>
+                                <button onClick={backToMenu} style={{
+                                    background: 'linear-gradient(135deg, #e53935 0%, #b71c1c 100%)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '15px', padding: 'clamp(8px, 1.5vw, 12px) clamp(15px, 4vw, 30px)',
+                                    fontFamily: 'Luckiest Guy', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)', fontSize: 'clamp(1.1rem, 3.5vw, 1.3rem)', transition: 'transform 0.2s'
+                                }}>BACK</button>
+                                <button onClick={() => setGameState('playing')} style={{
+                                    background: 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '15px', padding: 'clamp(8px, 1.5vw, 12px) clamp(15px, 4vw, 30px)',
+                                    fontFamily: 'Luckiest Guy', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)', fontSize: 'clamp(1.1rem, 3.5vw, 1.3rem)', transition: 'transform 0.2s'
+                                }}>START</button>
+                                <button onClick={cancelSetup} style={{
+                                    background: 'linear-gradient(135deg, #e53935 0%, #b71c1c 100%)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '15px', padding: 'clamp(8px, 1.5vw, 12px) clamp(15px, 4vw, 30px)',
+                                    fontFamily: 'Luckiest Guy', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)', fontSize: 'clamp(1.1rem, 3.5vw, 1.3rem)', transition: 'transform 0.2s'
+                                }}>CANCEL</button>
+                            </div>
+                        </div>
+                    )}
+
+
+                    {/*game working */}
+                    {gameState === 'playing' && (
+                        <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '1000px', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '10px' }}>
+                            {/* Header */}
+                            <div style={{
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                marginBottom: 'clamp(10px, 3vw, 25px)',
+                                flexWrap: 'nowrap',
+                                gap: 'clamp(5px, 2vw, 20px)',
+                                padding: '0 clamp(10px, 4vw, 40px)'
+                            }}>
+                                <button onClick={exitToMenu} style={{
+                                    padding: 'clamp(0.5rem, 1.5vw, 1rem)', background: 'rgba(45, 106, 79, 0.15)', border: 'none', borderRadius: '50%', color: '#000', cursor: 'pointer', transition: 'all 0.2s',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(45, 106, 79, 0.25)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(45, 106, 79, 0.15)'}>
+                                    <Home size={28} color="#fffcfcff" style={{ width: 'clamp(20px, 4.5vw, 32px)', height: 'clamp(20px, 4.5vw, 32px)' }} />
+                                </button>
+
+                                <div style={{ display: 'flex', gap: 'clamp(5px, 2vw, 20px)', flexWrap: 'wrap', justifyContent: 'center', flex: 1, minWidth: 0 }}>
+                                    <PlayerScore icon={<User size={18} />} name={playerNames.player1} score={scores.player1} color={playerColors.player1} active={currentPlayer === PLAYER1 && !winner} />
+                                    <PlayerScore
+                                        icon={gameMode === 'ai' ? <Bot size={18} /> : <Users size={18} />}
+                                        name={gameMode === 'ai' ? "BOT" : playerNames.player2}
+                                        score={scores.player2}
+                                        color={playerColors.player2}
+                                        active={currentPlayer === PLAYER2 && !winner}
+                                        thinking={isAiThinking}
+                                    />
+                                </div>
+
+                                <button onClick={resetGame} style={{
+                                    padding: 'clamp(0.5rem, 1.5vw, 1rem)', background: 'rgba(45, 106, 79, 0.15)', border: 'none', borderRadius: '50%', color: '#000', cursor: 'pointer',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(45, 106, 79, 0.25)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(45, 106, 79, 0.15)'}>
+                                    <RotateCcw size={28} color="#f7f0f0ff" style={{ width: 'clamp(20px, 4.5vw, 32px)', height: 'clamp(20px, 4.5vw, 32px)' }} />
+                                </button>
+                            </div>
+
+                            {/* Game Canvas Container */}
+                            <div style={{
+                                width: '100%',
+                                maxWidth: '100%',
+                                height: 'auto',
+                                maxHeight: '70vh',
+                                aspectRatio: `${WIDTH} / ${HEIGHT}`,
+                                background: 'transparent',
+                                borderRadius: '20px',
+                                padding: '4px',
+                                border: 'none',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}>
+                                <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} style={{
+                                    width: '100%',
+                                    height: 'auto',
+                                    maxWidth: '100%',
+                                    maxHeight: '100%',
+                                    objectFit: 'contain',
+                                    cursor: (winner || (gameMode === 'ai' && currentPlayer === PLAYER2)) ? 'default' : 'pointer',
+                                    display: 'block',
+                                    borderRadius: '16px'
+                                }} onClick={handleCanvasClick} onMouseMove={handleMouseMove} onMouseLeave={() => setHoveredCol(null)} />
+
+                                {winner && (
+                                    <div style={{
+                                        position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                                        background: 'rgba(0, 0, 0, 0.85)', backdropFilter: 'blur(8px)', borderRadius: '20px', padding: '20px', textAlign: 'center'
+                                    }}>
+                                        <div style={{
+                                            color: winner === 'draw' ? '#fff' : playerColors[winner],
+                                            fontSize: 'clamp(1.5rem, 8vw, 3rem)', fontWeight: 800, textAlign: 'center', textShadow: `0 0 20px currentColor`, display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', gap: '0.8rem'
+                                        }}>
+                                            {winner === 'draw' ? 'DRAW!' : <><Trophy size={40} /> {winner === PLAYER1 ? playerNames.player1 : (gameMode === 'ai' ? 'BOT' : playerNames.player2)} WINS!</>}
+                                        </div>
+                                        <button onClick={resetGame} style={{
+                                            marginTop: '1rem', padding: '0.8rem 2rem', fontSize: 'clamp(1rem, 4vw, 1.2rem)', fontWeight: 700,
+                                            background: 'linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: '50px',
+                                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s', boxShadow: '0 10px 20px rgba(0,0,0,0.3)'
+                                        }}> <RotateCcw size={18} /> RESET GAME </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* <div className="game-status" style={{ marginTop: '0.6rem', color: '#f7ededff', opacity: 0.9, fontWeight: 700, fontSize: 'clamp(0.8rem, 3vw, 1.1rem)' }}>
+              {gameMode === 'ai' && currentPlayer === PLAYER2 ? '🤖 Bot AI thinking...' : `🎮 ${currentPlayer === PLAYER1 ? playerNames.player1 : playerNames.player2}'s turn`}
+            </div> */}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </>
     );
 };
 
