@@ -180,9 +180,9 @@
           }
         }
 
-        /* Prevent landscape play only on mobile phones (not tablets) 16-02 */
-        @media (max-width: 768px) and (orientation: landscape) {
-          /* Hide main container only when rotate restriction is enabled */
+        /* Prevent landscape play on ALL devices (including laptops) 16-02 */
+        @media (orientation: landscape) {
+          /* Hide main container when rotate restriction is enabled */
           .main-app-container[data-rotate-restricted="true"] {
             display: none !important;
           }
@@ -192,7 +192,7 @@
             background: #1b4332 !important; /* Deep forest green background */
           }
           
-          /* Show rotate message only when enabled */
+          /* Show rotate message */
           .rotate-message[data-enabled="true"] {
             display: flex !important;
           }
@@ -203,16 +203,7 @@
           }
         }
 
-        /* Allow tablets in landscape - override for larger screens 16-02 */
-        @media (min-width: 769px) and (orientation: landscape) {
-          .main-app-container[data-rotate-restricted="true"] {
-            display: flex !important;
-          }
-          
-          .rotate-message[data-enabled="true"] {
-            display: none !important;
-          }
-        }
+        /* Override only if specifically needed for some devices, but user wants it on laptop too */
 
         /* Tablet responsive styles - Portrait Mode 16-02 */
         @media (min-width: 601px) and (max-width: 1024px) and (orientation: portrait) {
