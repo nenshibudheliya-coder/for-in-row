@@ -180,26 +180,27 @@
           }
         }
 
-        /* Prevent landscape play only on Mobile and Tablets (up to 1024px) 16-02 */
-        @media (max-width: 1024px) and (orientation: landscape) {
-          /* Hide main container when rotate restriction is enabled */
-          .main-app-container[data-rotate-restricted="true"] {
-            display: none !important;
+        /* Tablet & Mobile (up to 1024px) 16-02 */
+        @media (max-width: 1024px) {
+          /* Landscape: Show Error */
+          @media (orientation: landscape) {
+            .main-app-container[data-rotate-restricted="true"] {
+              display: none !important;
+            }
+            .rotate-message[data-enabled="true"] {
+              display: flex !important;
+            }
+            body { background: #1b4332 !important; overflow: hidden; }
           }
           
-          body {
-            overflow: hidden;
-            background: #1b4332 !important;
-          }
-          
-          /* Show rotate message */
-          .rotate-message[data-enabled="true"] {
-            display: flex !important;
-          }
-          
-          /* Hide rotate message when disabled */
-          .rotate-message[data-enabled="false"] {
-            display: none !important;
+          /* Portrait: Show Game */
+          @media (orientation: portrait) {
+            .main-app-container {
+              display: flex !important;
+            }
+            .rotate-message {
+              display: none !important;
+            }
           }
         }
 
