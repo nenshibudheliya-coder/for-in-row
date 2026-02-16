@@ -181,7 +181,7 @@
         }
 
         /* Prevent landscape play on mobile 09-02 --roated */
-        @media (max-width: 932px) and (orientation: landscape) {
+        @media (max-width: 768px) and (orientation: landscape) { /* 16-02 */
           /* Hide main container only when rotate restriction is enabled */
           .main-app-container[data-rotate-restricted="true"] {
             display: none !important;
