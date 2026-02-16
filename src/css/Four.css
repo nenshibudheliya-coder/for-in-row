@@ -180,8 +180,8 @@
           }
         }
 
-        /* Prevent landscape play only on small mobile phones, allow tablets in any orientation 16-02 */
-        @media (max-width: 600px) and (max-height: 500px) and (orientation: landscape) { /* 16-02 */
+        /* Prevent landscape play only on mobile phones (not tablets) 16-02 */
+        @media (max-width: 768px) and (orientation: landscape) {
           /* Hide main container only when rotate restriction is enabled */
           .main-app-container[data-rotate-restricted="true"] {
             display: none !important;
@@ -199,6 +199,17 @@
           
           /* Hide rotate message when disabled */
           .rotate-message[data-enabled="false"] {
+            display: none !important;
+          }
+        }
+
+        /* Allow tablets in landscape - override for larger screens 16-02 */
+        @media (min-width: 769px) and (orientation: landscape) {
+          .main-app-container[data-rotate-restricted="true"] {
+            display: flex !important;
+          }
+          
+          .rotate-message[data-enabled="true"] {
             display: none !important;
           }
         }
@@ -244,6 +255,11 @@
 
           .game-wrapper {
             padding: clamp(8px, 2vh, 15px) !important;
+          }
+
+          /* Compact player score for landscape 16-02 */
+          .main-app-container canvas {
+            border-radius: 12px;
           }
         }
 
