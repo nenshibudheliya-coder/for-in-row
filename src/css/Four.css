@@ -184,8 +184,8 @@
         @media (max-width: 1366px) {
           /* Landscape: Show Error on touch devices/tablets */
           @media (orientation: landscape) {
-            /* Only show rotate message if it's likely a tablet or mobile (touch device or small screen) */
-            @media (pointer: coarse), (max-height: 800px) {
+            /* Only show rotate message if it's a touch device OR small screen landscape */
+            @media (pointer: coarse) {
               .main-app-container[data-rotate-restricted="true"] {
                 display: none !important;
               }
@@ -207,8 +207,8 @@
           }
         }
 
-        /* Large Desktop View (1367px and above) always works 16-02 */
-        @media (min-width: 1367px) {
+        /* Desktop / Non-Touch View (Large screens or No Touch) - Always Show 16-02 */
+        @media (min-width: 1367px), (pointer: fine) {
           .main-app-container[data-rotate-restricted="true"] {
             display: flex !important;
           }
