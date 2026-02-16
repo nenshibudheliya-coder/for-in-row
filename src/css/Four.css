@@ -180,8 +180,8 @@
           }
         }
 
-        /* Prevent landscape play on mobile 09-02 --roated */
-        @media (max-width: 768px) and (orientation: landscape) { /* 16-02 */
+        /* Prevent landscape play only on small mobile phones, allow tablets in any orientation 16-02 */
+        @media (max-width: 600px) and (max-height: 500px) and (orientation: landscape) { /* 16-02 */
           /* Hide main container only when rotate restriction is enabled */
           .main-app-container[data-rotate-restricted="true"] {
             display: none !important;
@@ -203,6 +203,53 @@
           }
         }
 
+        /* Tablet responsive styles - Portrait Mode 16-02 */
+        @media (min-width: 601px) and (max-width: 1024px) and (orientation: portrait) {
+          .menu-title {
+            font-size: clamp(3.5rem, 12vw, 6rem);
+            margin-bottom: 2rem;
+          }
+          
+          .menu-btn {
+            width: min(500px, 80vw);
+            height: clamp(60px, 9vh, 85px);
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin: clamp(8px, 2.5vw, 15px);
+          }
+          
+          .menu-btn svg {
+            width: clamp(24px, 5vw, 35px);
+            height: clamp(24px, 5vw, 35px);
+          }
+        }
+
+        /* Tablet responsive styles - Landscape Mode 16-02 */
+        @media (min-width: 601px) and (max-width: 1366px) and (orientation: landscape) {
+          .menu-title {
+            font-size: clamp(3rem, 10vh, 5rem);
+            margin-bottom: 1.5rem;
+          }
+          
+          .menu-btn {
+            width: min(450px, 70vw);
+            height: clamp(55px, 8vh, 70px);
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+            margin: clamp(6px, 2vw, 12px);
+          }
+          
+          .menu-btn svg {
+            width: clamp(22px, 4vw, 30px);
+            height: clamp(22px, 4vw, 30px);
+          }
+
+          .game-wrapper {
+            padding: clamp(8px, 2vh, 15px) !important;
+          }
+        }
+
+
+
+        
         /* Rotate message overlay */
         .rotate-message {
           display: none;

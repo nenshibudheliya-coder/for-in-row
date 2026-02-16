@@ -35,12 +35,12 @@ const FourInARow = () => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
 
-    // Attempt to lock orientation to portrait
-    try {
-      if (screen.orientation && screen.orientation.lock) {
-        screen.orientation.lock('portrait').catch(() => { });
-      }
-    } catch (e) { }
+    // // Attempt to lock orientation to portrait
+    // try {
+    //   if (screen.orientation && screen.orientation.lock) {
+    //     screen.orientation.lock('portrait').catch(() => { });
+    //   }
+    // } catch (e) { }
 
     return () => window.removeEventListener('resize', handleResize);
   }, []); //
@@ -683,7 +683,7 @@ const FourInARow = () => {
                 width: '100%',
                 maxWidth: '100%',
                 height: 'auto',
-                maxHeight: '70vh',
+                maxHeight: windowWidth >= 601 && windowWidth <= 1024 ? '80vh' : '70vh', // 16-02 tablet optimization
                 aspectRatio: `${WIDTH} / ${HEIGHT}`,
                 background: 'transparent',
                 borderRadius: '20px',
