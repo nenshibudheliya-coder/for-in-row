@@ -683,7 +683,7 @@ const FourInARow = () => {
                 width: '100%',
                 maxWidth: '100%',
                 height: 'auto',
-                maxHeight: windowWidth >= 601 && windowWidth <= 1024 ? '80vh' : '70vh', // 16-02 tablet optimization
+                maxHeight: windowWidth >= 601 && windowWidth <= 1366 ? '80vh' : '70vh', // 16-02 tablet optimization
                 aspectRatio: `${WIDTH} / ${HEIGHT}`,
                 background: 'transparent',
                 borderRadius: '20px',
