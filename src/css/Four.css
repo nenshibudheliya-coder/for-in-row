@@ -180,8 +180,8 @@
           }
         }
 
-        /* Prevent landscape play on ALL devices (including laptops) 16-02 */
-        @media (orientation: landscape) {
+        /* Prevent landscape play only on Mobile and Tablets (up to 1024px) 16-02 */
+        @media (max-width: 1024px) and (orientation: landscape) {
           /* Hide main container when rotate restriction is enabled */
           .main-app-container[data-rotate-restricted="true"] {
             display: none !important;
@@ -189,7 +189,7 @@
           
           body {
             overflow: hidden;
-            background: #1b4332 !important; /* Deep forest green background */
+            background: #1b4332 !important;
           }
           
           /* Show rotate message */
@@ -203,7 +203,15 @@
           }
         }
 
-        /* Override only if specifically needed for some devices, but user wants it on laptop too */
+        /* Desktop View (1025px and above) always works in landscape 16-02 */
+        @media (min-width: 1025px) {
+          .main-app-container[data-rotate-restricted="true"] {
+            display: flex !important;
+          }
+          .rotate-message {
+            display: none !important;
+          }
+        }
 
         /* Tablet responsive styles - Portrait Mode 16-02 */
         @media (min-width: 601px) and (max-width: 1024px) and (orientation: portrait) {
