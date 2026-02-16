@@ -35,12 +35,12 @@ const FourInARow = () => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
 
-    // // Attempt to lock orientation to portrait
-    // try {
-    //   if (screen.orientation && screen.orientation.lock) {
-    //     screen.orientation.lock('portrait').catch(() => { });
-    //   }
-    // } catch (e) { }
+    // Attempt to lock orientation to portrait
+    try {
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('portrait').catch(() => { });
+      }
+    } catch (e) { }
 
     return () => window.removeEventListener('resize', handleResize);
   }, []); //
