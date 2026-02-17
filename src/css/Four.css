@@ -180,8 +180,8 @@
           }
         }
 
-        /* Tablet & Mobile (up to 1366px) - Enforce Portrait 16-02 */
-        @media (max-width: 1366px) {
+        /* Mobile only (up to 600px) - Enforce Portrait 16-02 */
+        @media (max-width: 600px) {
           /* Landscape: Show Error on touch devices/tablets */
           @media (orientation: landscape) {
             /* Only show rotate message if it's a touch device OR small screen landscape */
