@@ -180,30 +180,35 @@
           }
         }
 
-        /* Mobile only (up to 600px) - Enforce Portrait 16-02 */
-        @media (max-width: 600px) {
-          /* Landscape: Show Error on touch devices/tablets */
-          @media (orientation: landscape) {
-            /* Only show rotate message if it's a touch device OR small screen landscape */
-            @media (pointer: coarse) {
-              .main-app-container[data-rotate-restricted="true"] {
-                display: none !important;
-              }
-              .rotate-message[data-enabled="true"] {
-                display: flex !important;
-              }
-              body { background: #1b4332 !important; overflow: hidden; }
-            }
+        /* Orientation Logic 17-02 */
+        /* 1. Mobile Landscape: SHOW ERROR (Only for small height screens like phones) */
+        @media (orientation: landscape) and (max-height: 550px) and (pointer: coarse) {
+          .main-app-container[data-rotate-restricted="true"] {
+            display: none !important;
           }
-          
-          /* Portrait: Show Game */
-          @media (orientation: portrait) {
-            .main-app-container {
-              display: flex !important;
-            }
-            .rotate-message {
-              display: none !important;
-            }
+          .rotate-message[data-enabled="true"] {
+            display: flex !important;
+          }
+          body { background: #1b4332 !important; overflow: hidden; }
+        }
+
+        /* 2. Portrait Mode (Any device): SHOW GAME */
+        @media (orientation: portrait) {
+          .main-app-container {
+            display: flex !important;
+          }
+          .rotate-message {
+            display: none !important;
+          }
+        }
+
+        /* 3. Tablet/Large Landscape: SHOW GAME */
+        @media (orientation: landscape) and (min-height: 551px) {
+          .main-app-container {
+            display: flex !important;
+          }
+          .rotate-message {
+            display: none !important;
           }
         }
 
