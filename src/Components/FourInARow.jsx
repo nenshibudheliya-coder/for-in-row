@@ -35,12 +35,14 @@ const FourInARow = () => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
 
-    // Attempt to lock orientation to portrait
-    try {
-      if (screen.orientation && screen.orientation.lock) {
-        screen.orientation.lock('portrait').catch(() => { });
-      }
-    } catch (e) { }
+    // Attempt to lock orientation to portrait (Mobile only)
+    if (window.innerWidth <= 600) {
+      try {
+        if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock('portrait').catch(() => { });
+        }
+      } catch (e) { }
+    }
 
     return () => window.removeEventListener('resize', handleResize);
   }, []); //
@@ -405,18 +407,20 @@ const FourInARow = () => {
   return (
     <>
       {/* Rotate Message Overlay for Landscape Mode on Mobile */}
-      <div className="rotate-message" data-enabled="true">
-        <svg className="rotate-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
-          <polyline points="17 2 12 7 7 2"></polyline>
-        </svg>
-        <h2>Please Rotate Your Device</h2>
-        <p>This game works best in portrait mode</p>
-      </div>
+      {windowWidth <= 600 && (
+        <div className="rotate-message" data-enabled="true">
+          <svg className="rotate-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+            <polyline points="17 2 12 7 7 2"></polyline>
+          </svg>
+          <h2>Please Rotate Your Device</h2>
+          <p>This game works best in portrait mode</p>
+        </div>
+      )}
 
       <div
         className="main-app-container"
-        data-rotate-restricted="true"
+        data-rotate-restricted={windowWidth <= 600 ? "true" : "false"}
         style={{
           minHeight: '100vh',
           background: '#d8f3dc', //05-02 --background-green//
