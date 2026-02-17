@@ -405,7 +405,6 @@ const FourInARow = () => {
   return (
     <>
       {/* Rotate Message Overlay for Landscape Mode on Mobile */}
-      {/* Rotate Message Overlay for Landscape Mode on Mobile */}
       <div className="rotate-message" data-enabled="true">
         <svg className="rotate-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
